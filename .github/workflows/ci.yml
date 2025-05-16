@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang & clang-format
+        run: |
+          sudo apt update
+          sudo apt install -y clang clang-format make valgrind
+
+      - name: Clang Format
+        working-directory: arrays
+        run: make lint
+
+      - name: Build and test
+        working-directory: arrays
+        run: make test
+
+      - name: Check Memory Leaks
+        working-directory: arrays
+        run: make valgrind
+
+  go:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        go-version: [ '1.24.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Go version
+        run: go version
+
+      - name: Static Analysis
+        run: go vet ./...
+
+      - name: Unittest
+        run: go test -race -v ./...
