@@ -28,6 +28,7 @@ func TestSinglyLinkedList(t *testing.T) {
 		{name: "backward iter", simulator: adttest.IterBackwardSimulator(c, g)},
 		{name: "to string", simulator: adttest.BracketStringSimulator(c, g)},
 		{name: "sort", simulator: adttest.SortSimulator(c, g)},
+		{name: "insert and remove", simulator: adttest.InsertRemoveSimulator(c, g)},
 	}
 
 	for _, tt := range tests {

@@ -191,3 +191,68 @@ func (l *DoublyLinkedList[E]) reset() {
 	l.tail = nil
 	l.size = 0
 }
+
+func (l *DoublyLinkedList[E]) Insert(index int, data E) {
+	if index == 0 {
+		l.Prepend(data)
+		return
+	}
+
+	if index == l.Size() {
+		l.Append(data)
+		return
+	}
+
+	l.checkBounds(index)
+	p := l.head
+	for i := 0; i < index-1; i++ {
+		p = p.next
+	}
+	n := NewBinaryNode(data, p.next, p)
+	p.next.prev = n
+	p.next = n
+	l.size++
+}
+
+func (l *DoublyLinkedList[E]) Remove(index int) E {
+	l.checkBounds(index)
+
+	if index == 0 {
+		return l.Shift()
+	}
+
+	if index == l.Size()-1 {
+		return l.Pop()
+	}
+
+	var curr *BinaryNode[E]
+	// traverse based on shortest distance.
+	if index < l.size/2 {
+		curr = l.head
+		for i := 0; i < index; i++ {
+			curr = curr.next
+		}
+	} else {
+		curr = l.tail
+		for i := l.size - 1; i > index; i-- {
+			curr = curr.prev
+		}
+	}
+
+	// curr is the node to be removed.
+	prev := curr.prev
+	next := curr.next
+
+	if prev != nil {
+		prev.next = next
+	}
+	if next != nil {
+		next.prev = prev
+	}
+
+	// unlink to help GC.
+	curr.prev = nil
+	curr.next = nil
+	l.size--
+	return curr.data
+}

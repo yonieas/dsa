@@ -37,6 +37,7 @@ func TestDynamicArray(t *testing.T) {
 		{name: "to string", simulator: adttest.BracketStringSimulator(c, g, d)},
 		{name: "sort", simulator: adttest.SortSimulator(c, g, d)},
 		{name: "doubling grow", simulator: adttest.DoublingGrowSimulator(c, g, d)},
+		{name: "insert and remove", simulator: adttest.InsertRemoveSimulator(c, g, d)},
 	}
 
 	for _, tt := range tests {

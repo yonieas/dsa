@@ -30,13 +30,13 @@ func randSample() int {
 }
 
 func AppendSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Tailer[E]
-	adt.Appender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Tailer[E]
+		adt.Appender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -59,13 +59,13 @@ Constructor func() Abstract,
 }
 
 func PrependSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Header[E]
-	adt.Prepender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Header[E]
+		adt.Prepender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -88,14 +88,14 @@ Constructor func() Abstract,
 }
 
 func PopSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Emptier
-	adt.Popper[E]
-	adt.Appender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Emptier
+		adt.Popper[E]
+		adt.Appender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -132,14 +132,14 @@ Constructor func() Abstract,
 }
 
 func ShiftSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Emptier
-	adt.Shifter[E]
-	adt.Prepender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Emptier
+		adt.Shifter[E]
+		adt.Prepender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -176,13 +176,13 @@ Constructor func() Abstract,
 }
 
 func GetSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Getter[E]
-	adt.Appender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Getter[E]
+		adt.Appender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -216,14 +216,14 @@ Constructor func() Abstract,
 }
 
 func SetSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Getter[E]
-	adt.Setter[E]
-	adt.Appender[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Getter[E]
+		adt.Setter[E]
+		adt.Appender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -266,13 +266,13 @@ Constructor func() Abstract,
 }
 
 func IterSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Appender[E]
-	adt.Iterator[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Appender[E]
+		adt.Iterator[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -305,13 +305,13 @@ Constructor func() Abstract,
 }
 
 func IterBackwardSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Appender[E]
-	adt.BackwordIterator[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Appender[E]
+		adt.BackwordIterator[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -346,13 +346,13 @@ Constructor func() Abstract,
 }
 
 func BracketStringSimulator[
-E any,
-Abstract interface {
-	adt.Sizer
-	adt.Appender[E]
-	fmt.Stringer
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Sizer
+		adt.Appender[E]
+		fmt.Stringer
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -380,14 +380,14 @@ Constructor func() Abstract,
 }
 
 func SortSimulator[
-E cmp.Ordered,
-Abstract interface {
-	adt.Sizer
-	adt.Getter[E]
-	adt.Setter[E]
-	adt.Appender[E]
-},
-Constructor func() Abstract,
+	E cmp.Ordered,
+	Abstract interface {
+		adt.Sizer
+		adt.Getter[E]
+		adt.Setter[E]
+		adt.Appender[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -438,15 +438,15 @@ func (s *sortable[E]) Swap(i, j int) {
 }
 
 func DoublingGrowSimulator[
-E cmp.Ordered,
-Abstract interface {
-	adt.Sizer
-	adt.Caper
-	adt.Appender[E]
-	adt.Prepender[E]
-	adt.Iterator[E]
-},
-Constructor func() Abstract,
+	E cmp.Ordered,
+	Abstract interface {
+		adt.Sizer
+		adt.Caper
+		adt.Appender[E]
+		adt.Prepender[E]
+		adt.Iterator[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -499,11 +499,11 @@ Constructor func() Abstract,
 }
 
 func StackSimulator[
-E any,
-Abstract interface {
-	adt.Stack[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Stack[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -540,11 +540,11 @@ Constructor func() Abstract,
 }
 
 func QueueSimulator[
-E any,
-Abstract interface {
-	adt.Queue[E]
-},
-Constructor func() Abstract,
+	E any,
+	Abstract interface {
+		adt.Queue[E]
+	},
+	Constructor func() Abstract,
 ](
 	c Constructor,
 	g Generator[E],
@@ -579,6 +579,203 @@ Constructor func() Abstract,
 
 		assert.Zero(t, a.Size())
 		assert.True(t, a.Empty())
+	}
+}
+
+func InsertRemoveSimulator[
+	E comparable,
+	Abstract interface {
+		adt.Sizer
+		adt.Inserter[E]
+		adt.Remover[E]
+		adt.Getter[E]
+	},
+	Constructor func() Abstract,
+](
+	c Constructor,
+	g Generator[E],
+	destructors ...func(Abstract),
+) Runner {
+	return func(t *testing.T) {
+		t.Helper()
+
+		a := c()
+		setCleanup(t, a, destructors)
+		assert.Zero(t, a.Size())
+
+		v1 := g.New()
+		a.Insert(0, v1)
+		assert.Equal(t, v1, a.Get(0))
+		assert.Equal(t, 1, a.Size())
+
+		assert.Equal(t, v1, a.Remove(0))
+		assert.Zero(t, a.Size())
+
+		v2 := g.New()
+		a.Insert(0, v1)
+		a.Insert(a.Size(), v2)
+		assert.Equal(t, v1, a.Get(0))
+		assert.Equal(t, v2, a.Get(a.Size()-1))
+		assert.Equal(t, 2, a.Size())
+
+		v3 := g.New()
+		a.Insert(1, v3)
+		assert.Equal(t, v1, a.Get(0))
+		assert.Equal(t, v3, a.Get(1))
+		assert.Equal(t, v2, a.Get(2))
+
+		v4 := g.New()
+		a.Insert(2, v4)
+		assert.Equal(t, v1, a.Get(0))
+		assert.Equal(t, v3, a.Get(1))
+		assert.Equal(t, v4, a.Get(2))
+		assert.Equal(t, v2, a.Get(3))
+		assert.Equal(t, 4, a.Size())
+
+		assert.Equal(t, v3, a.Remove(1))
+		assert.Equal(t, v4, a.Remove(1))
+		assert.Equal(t, v2, a.Remove(1))
+		assert.Equal(t, v1, a.Remove(0))
+		assert.Zero(t, a.Size())
+	}
+}
+
+func HashSetSimulator[
+	T comparable,
+	Set interface {
+		adt.Sizer
+		adt.Emptier
+		adt.Adder[T]
+		adt.Deleter[T]
+		adt.Exister[T]
+		adt.Iterator[T]
+	},
+	Constructor func() Set,
+](
+	c Constructor,
+	g Generator[T],
+	destructors ...func(Set),
+) Runner {
+	return func(t *testing.T) {
+		t.Helper()
+
+		set := c()
+		setCleanup(t, set, destructors)
+		assert.Zero(t, set.Size())
+		assert.True(t, set.Empty())
+
+		var truth = map[T]struct{}{}
+		n := randSample()
+
+		for range n {
+			v := g.New()
+			set.Add(v)
+			truth[v] = struct{}{}
+
+			assert.True(t, set.Exists(v))
+			assert.Equal(t, len(truth), set.Size())
+		}
+
+		for k := range truth {
+			assert.True(t, set.Exists(k))
+		}
+		set.Iter(func(v T) bool {
+			_, ok := truth[v]
+			assert.True(t, ok)
+			return true
+		})
+
+		half := 0
+		for k := range truth {
+			if half >= len(truth)/2 {
+				break
+			}
+			set.Del(k)
+			delete(truth, k)
+			half++
+		}
+
+		assert.Equal(t, len(truth), set.Size())
+		for k := range truth {
+			assert.True(t, set.Exists(k))
+		}
+	}
+}
+
+func HashMapSimulator[
+	K comparable,
+	V comparable,
+	Map interface {
+		Put(K, V)
+		Get(K) (V, bool)
+		adt.Sizer
+		adt.Emptier
+		adt.Deleter[K]
+		adt.Keys[K]
+		adt.Exister[K]
+	},
+	Constructor func() Map,
+](
+	c Constructor,
+	keyGen Generator[K],
+	valGen Generator[V],
+	destructors ...func(Map),
+) Runner {
+	return func(t *testing.T) {
+		t.Helper()
+
+		m := c()
+		setCleanup(t, m, destructors)
+
+		assert.True(t, m.Empty())
+		assert.Zero(t, m.Size())
+
+		truth := make(map[K]V)
+		n := randSample()
+
+		for range n {
+			k := keyGen.New()
+			v := valGen.New()
+			m.Put(k, v)
+			truth[k] = v
+			got, ok := m.Get(k)
+			assert.True(t, ok)
+			assert.Equal(t, v, got)
+		}
+
+		assert.Equal(t, len(truth), m.Size())
+
+		for k, v := range truth {
+			assert.True(t, m.Exists(k))
+			got, ok := m.Get(k)
+			assert.True(t, ok)
+			assert.Equal(t, v, got)
+		}
+
+		iterCount := 0
+		for k := range m.Keys {
+			expected, ok := truth[k]
+			assert.True(t, ok)
+			v, ok := m.Get(k)
+			assert.True(t, ok)
+			assert.Equal(t, expected, v)
+			iterCount++
+		}
+		assert.Equal(t, len(truth), iterCount)
+
+		deleted := 0
+		for k := range truth {
+			if deleted >= len(truth)/2 {
+				break
+			}
+			m.Del(k)
+			delete(truth, k)
+			assert.False(t, m.Exists(k))
+			_, ok := m.Get(k)
+			assert.False(t, ok)
+			deleted++
+		}
+		assert.Equal(t, len(truth), m.Size())
 	}
 }
 

@@ -2,6 +2,7 @@ package dynamicarray
 
 import (
 	"github.com/josestg/dsa/arrays"
+	"github.com/josestg/dsa/internal/generics"
 	"github.com/josestg/dsa/sequence"
 )
 
@@ -180,6 +181,37 @@ func (d *DynamicArray[T]) IterBackward(yield func(T) bool) {
 
 func (d *DynamicArray[T]) String() string {
 	return sequence.String(d.Iter)
+}
+
+func (d *DynamicArray[T]) Insert(index int, value T) {
+	if index < 0 || index > d.size {
+		panic("DynamicArray.Insert: index out of range")
+	}
+
+	if d.size >= d.Cap() {
+		d.grow()
+	}
+
+	for i := d.size; i > index; i-- {
+		d.backend.Set(i, d.backend.Get(i-1))
+	}
+
+	d.backend.Set(index, value)
+	d.size++
+}
+
+func (d *DynamicArray[T]) Remove(index int) T {
+	d.checkBounds(index)
+
+	val := d.backend.Get(index)
+
+	for i := index; i < d.size-1; i++ {
+		d.backend.Set(i, d.backend.Get(i+1))
+	}
+
+	d.backend.Set(d.size-1, generics.ZeroValue[T]())
+	d.size--
+	return val
 }
 
 func (d *DynamicArray[T]) checkBounds(index int) {

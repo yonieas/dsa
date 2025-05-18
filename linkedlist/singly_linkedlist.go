@@ -174,6 +174,55 @@ func (l *SinglyLinkedList[T]) String() string {
 	return sequence.String(l.Iter)
 }
 
+func (l *SinglyLinkedList[T]) Remove(index int) T {
+	l.checkBounds(index)
+
+	if index == 0 {
+		return l.Shift()
+	}
+
+	if index == l.Size()-1 {
+		return l.Pop()
+	}
+
+	prev := l.head
+	for i := 0; i < index-1; i++ {
+		prev = prev.next
+	}
+
+	target := prev.next
+	prev.next = target.next
+	target.next = nil // unlink to help GC.
+	l.size--
+	return target.data
+}
+
+func (l *SinglyLinkedList[T]) Insert(index int, data T) {
+	if index == 0 {
+		l.Prepend(data)
+		return
+	}
+
+	if index == l.Size() {
+		l.Append(data)
+		return
+	}
+
+	l.checkBounds(index)
+
+	p := l.head
+	for i := 0; i < index-1; i++ {
+		p = p.next
+	}
+
+	n := NewUnaryNode(data, p.next)
+	p.next = n
+	if n.next == nil {
+		l.tail = n
+	}
+	l.size++
+}
+
 func (l *SinglyLinkedList[T]) checkBounds(index int) {
 	if index < 0 || index >= l.Size() {
 		panic("SinglyLinkedList.checkBounds: index out of range")

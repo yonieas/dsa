@@ -1,6 +1,8 @@
 package adt
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Sizer interface {
 	Size() int
@@ -74,4 +76,28 @@ type Queue[T any] interface {
 	Peeker[T]
 	Enqueue(T)
 	Dequeue() T
+}
+
+type Remover[E any] interface {
+	Remove(index int) E
+}
+
+type Inserter[E any] interface {
+	Insert(index int, data E)
+}
+
+type Adder[E any] interface {
+	Add(E)
+}
+
+type Deleter[E any] interface {
+	Del(E)
+}
+
+type Exister[E any] interface {
+	Exists(E) bool
+}
+
+type Keys[K comparable] interface {
+	Keys(yield func(K) bool)
 }
