@@ -1,37 +1,34 @@
 package linkedlist_test
 
 import (
-	"math/rand"
 	"testing"
 
-	"github.com/josestg/dsa/adt/adttest"
+	"github.com/josestg/dsa/adt/prop"
 	"github.com/josestg/dsa/linkedlist"
 )
 
 func TestSinglyLinkedList(t *testing.T) {
-	c := linkedlist.NewSinglyLinkedList[int]
-	g := func() int {
-		return rand.Intn(128)
+	specs := []prop.Spec{
+		prop.Append(linkedlist.NewSinglyLinkedList[int]),
+		prop.Prepend(linkedlist.NewSinglyLinkedList[int]),
+		prop.GetSet(linkedlist.NewSinglyLinkedList[int]),
+		prop.HeadTail(linkedlist.NewSinglyLinkedList[int]),
+		prop.Pop(linkedlist.NewSinglyLinkedList[int]),
+		prop.Shift(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryPop(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryShift(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryHead(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryTail(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryGet(linkedlist.NewSinglyLinkedList[int]),
+		prop.TrySet(linkedlist.NewSinglyLinkedList[int]),
+		prop.TryRemove(linkedlist.NewSinglyLinkedList[int]),
+		prop.Iter(linkedlist.NewSinglyLinkedList[int]),
+		prop.IterBackward(linkedlist.NewSinglyLinkedList[int]),
+		prop.Insert(linkedlist.NewSinglyLinkedList[int]),
+		prop.Remove(linkedlist.NewSinglyLinkedList[int]),
 	}
 
-	tests := []struct {
-		name      string
-		simulator adttest.Runner
-	}{
-		{name: "append", simulator: adttest.AppendSimulator(c, g)},
-		{name: "prepend", simulator: adttest.PrependSimulator(c, g)},
-		{name: "pop", simulator: adttest.PopSimulator(c, g)},
-		{name: "shift", simulator: adttest.ShiftSimulator(c, g)},
-		{name: "get", simulator: adttest.GetSimulator(c, g)},
-		{name: "set", simulator: adttest.SetSimulator(c, g)},
-		{name: "iter", simulator: adttest.IterSimulator(c, g)},
-		{name: "backward iter", simulator: adttest.IterBackwardSimulator(c, g)},
-		{name: "to string", simulator: adttest.BracketStringSimulator(c, g)},
-		{name: "sort", simulator: adttest.SortSimulator(c, g)},
-		{name: "insert and remove", simulator: adttest.InsertRemoveSimulator(c, g)},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, tt.simulator)
+	for _, spec := range specs {
+		t.Run(spec.Name, spec.Test)
 	}
 }

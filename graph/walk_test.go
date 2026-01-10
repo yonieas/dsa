@@ -1,10 +1,10 @@
 package graph_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/josestg/dsa/graph"
-	"github.com/stretchr/testify/assert"
 )
 
 func createTestGraph() *graph.Graph[string] {
@@ -26,8 +26,12 @@ func TestWalker_BFS(t *testing.T) {
 	})
 
 	expected := []string{"A", "B", "C", "D"}
-	assert.Equal(t, expected, visited)
-	assert.True(t, w.Explored())
+	if !slices.Equal(visited, expected) {
+		t.Errorf("BFS got %v, want %v", visited, expected)
+	}
+	if !w.Explored() {
+		t.Error("expected Explored() to be true")
+	}
 }
 
 func TestWalker_DFSPreOrder(t *testing.T) {
@@ -39,10 +43,13 @@ func TestWalker_DFSPreOrder(t *testing.T) {
 		visited = append(visited, v)
 	})
 
-	// PreOrder may vary depending on neighbor order, but expected consistent here.
 	expected := []string{"A", "B", "D", "C"}
-	assert.Equal(t, expected, visited)
-	assert.True(t, w.Explored())
+	if !slices.Equal(visited, expected) {
+		t.Errorf("DFSPreOrder got %v, want %v", visited, expected)
+	}
+	if !w.Explored() {
+		t.Error("expected Explored() to be true")
+	}
 }
 
 func TestWalker_DFSPostOrder(t *testing.T) {
@@ -55,14 +62,18 @@ func TestWalker_DFSPostOrder(t *testing.T) {
 	})
 
 	expected := []string{"D", "B", "C", "A"}
-	assert.Equal(t, expected, visited)
-	assert.True(t, w.Explored())
+	if !slices.Equal(visited, expected) {
+		t.Errorf("DFSPostOrder got %v, want %v", visited, expected)
+	}
+	if !w.Explored() {
+		t.Error("expected Explored() to be true")
+	}
 }
 
 func TestWalker_WalkAll(t *testing.T) {
 	g := graph.New[string](true)
 	g.AddEdge("A", "B")
-	g.AddEdge("C", "D") // disconnected component.
+	g.AddEdge("C", "D")
 
 	w := graph.NewWalker(g, graph.BFS)
 
@@ -71,20 +82,39 @@ func TestWalker_WalkAll(t *testing.T) {
 		visited = append(visited, v)
 	})
 
-	assert.ElementsMatch(t, []string{"A", "B", "C", "D"}, visited)
-	assert.True(t, w.Explored())
+	if len(visited) != 4 {
+		t.Errorf("WalkAll got %d elements, want 4", len(visited))
+	}
+	slices.Sort(visited)
+	expected := []string{"A", "B", "C", "D"}
+	if !slices.Equal(visited, expected) {
+		t.Errorf("WalkAll got %v, want %v (sorted)", visited, expected)
+	}
+	if !w.Explored() {
+		t.Error("expected Explored() to be true")
+	}
 }
 
 func TestWalker_VisitedAndExplored(t *testing.T) {
 	g := createTestGraph()
 	w := graph.NewWalker(g, graph.DFSPreOrder)
 
-	assert.False(t, w.Visited("A"))
-	assert.False(t, w.Explored())
+	if w.Visited("A") {
+		t.Error("Visited(A) should be false before Walk")
+	}
+	if w.Explored() {
+		t.Error("Explored() should be false before Walk")
+	}
 
 	w.Walk("A", func(_ string) {})
 
-	assert.True(t, w.Visited("A"))
-	assert.True(t, w.Visited("D"))
-	assert.True(t, w.Explored())
+	if !w.Visited("A") {
+		t.Error("Visited(A) should be true after Walk")
+	}
+	if !w.Visited("D") {
+		t.Error("Visited(D) should be true after Walk")
+	}
+	if !w.Explored() {
+		t.Error("Explored() should be true after Walk")
+	}
 }

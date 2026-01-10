@@ -1,30 +1,36 @@
 package tree_test
 
 import (
-	"math/rand"
 	"testing"
 
-	"github.com/josestg/dsa/adt/adttest"
+	"github.com/josestg/dsa/adt/prop"
 	"github.com/josestg/dsa/tree"
 )
 
 func TestBinarySearchTree(t *testing.T) {
-	c := tree.NewBinarySearchTree[int]
-	g := func() int {
-		return rand.Intn(128)
+	specs := []prop.Spec{
+		prop.AddExistsDel(tree.NewBinarySearchTree[int]),
+		prop.BSTMinMax(tree.NewBinarySearchTree[int]),
+		prop.BSTInOrder(tree.NewBinarySearchTree[int]),
+		prop.BSTPreOrder(tree.NewBinarySearchTree[int]),
+		prop.BSTPostOrder(tree.NewBinarySearchTree[int]),
+		prop.BSTString(tree.NewBinarySearchTree[int]),
+		prop.BSTIterBackward(tree.NewBinarySearchTree[int]),
 	}
 
-	tests := []struct {
-		name      string
-		simulator adttest.Runner
-	}{
-		{name: "insert", simulator: adttest.BSTInsertSimulator(c, g)},
-		{name: "in order", simulator: adttest.BSTInOrderSimulator(c, g)},
-		{name: "min max", simulator: adttest.BSTMinMaxSimulator(c, g)},
-		{name: "delete", simulator: adttest.BSTDeleteSimulator(c, g)},
+	for _, spec := range specs {
+		t.Run(spec.Name, spec.Test)
 	}
+}
 
-	for _, tt := range tests {
-		t.Run(tt.name, tt.simulator)
+func TestBinarySearchTree_String_StringType(t *testing.T) {
+	bst := tree.NewBinarySearchTree[string]()
+	bst.Add("banana")
+	bst.Add("apple")
+	bst.Add("cherry")
+	got := bst.String()
+	want := "[apple banana cherry]"
+	if got != want {
+		t.Errorf("String() = %q, want %q", got, want)
 	}
 }

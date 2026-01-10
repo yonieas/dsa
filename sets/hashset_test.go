@@ -1,27 +1,21 @@
 package sets_test
 
 import (
-	"math/rand"
 	"testing"
 
-	"github.com/josestg/dsa/adt/adttest"
+	"github.com/josestg/dsa/adt/prop"
 	"github.com/josestg/dsa/sets"
 )
 
 func TestHashSet(t *testing.T) {
-	c := sets.New[int]
-	g := func() int {
-		return rand.Intn(128)
+	specs := []prop.Spec{
+		prop.Set(sets.New[int]),
+		prop.Union(sets.New[int]),
+		prop.Intersection(sets.New[int]),
+		prop.Disjoint(sets.New[int]),
 	}
 
-	tests := []struct {
-		name      string
-		simulator adttest.Runner
-	}{
-		{name: "sets", simulator: adttest.HashSetSimulator(c, g)},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, tt.simulator)
+	for _, spec := range specs {
+		t.Run(spec.Name, spec.Test)
 	}
 }

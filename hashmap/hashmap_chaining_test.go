@@ -1,30 +1,21 @@
 package hashmap_test
 
 import (
-	"math/rand"
 	"testing"
 
-	"github.com/josestg/dsa/adt/adttest"
+	"github.com/josestg/dsa/adt/prop"
 	"github.com/josestg/dsa/hashmap"
 )
 
 func TestHashMap(t *testing.T) {
-	c := hashmap.New[int, int]
-	kg := func() int {
-		return rand.Intn(128)
-	}
-	vg := func() int {
-		return rand.Intn(128)
-	}
-
-	tests := []struct {
-		name      string
-		simulator adttest.Runner
-	}{
-		{name: "hashmap", simulator: adttest.HashMapSimulator(c, kg, vg)},
+	specs := []prop.Spec{
+		prop.MapPutGetDel(hashmap.New[int, int]),
+		prop.MapKeys(hashmap.New[int, int]),
+		prop.MapLoadFactor(hashmap.New[int, int]),
+		prop.MapString(hashmap.New[int, int]),
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, tt.simulator)
+	for _, spec := range specs {
+		t.Run(spec.Name, spec.Test)
 	}
 }
