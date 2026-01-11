@@ -55,8 +55,8 @@
 package dynamicarray
 
 import (
-	"github.com/josestg/dsa/arrays"
-	"github.com/josestg/dsa/sequence"
+    "github.com/josestg/dsa/arrays"
+    "github.com/josestg/dsa/sequence"
 )
 
 // DynamicArray is a resizable array that grows automatically.
@@ -69,8 +69,8 @@ import (
 //
 // When size reaches capacity, a resize doubles the capacity.
 type DynamicArray[T any] struct {
-	backend *arrays.Array[T]
-	size    int
+    backend *arrays.Array[T]
+    size    int
 }
 
 // New creates an empty DynamicArray with given initial capacity.
@@ -87,14 +87,14 @@ type DynamicArray[T any] struct {
 //
 // Panics if capacity <= 0.
 func New[T any](capacity int) *DynamicArray[T] {
-	if capacity <= 0 {
-		panic("dynamicarray.New: must have at minimum 1 capacity")
-	}
-	b := arrays.NewGarbageCollected[T](capacity, true)
-	return &DynamicArray[T]{
-		backend: b,
-		size:    0,
-	}
+    if capacity <= 0 {
+        panic("dynamicarray.New: must have at minimum 1 capacity")
+    }
+    b := arrays.NewGarbageCollected[T](capacity, true)
+    return &DynamicArray[T]{
+        backend: b,
+        size:    0,
+    }
 }
 
 // Empty returns true if the array has no elements.
@@ -117,8 +117,8 @@ func (d *DynamicArray[T]) Empty() bool { return d.Size() == 0 }
 //
 // SCORE: 5
 func (d *DynamicArray[T]) Size() int {
-	// hint: return the size field
-	panic("todo: please implement me!")
+    // hint: return the size field
+    panic("todo: please implement me!")
 }
 
 // Cap returns the current capacity.
@@ -129,8 +129,8 @@ func (d *DynamicArray[T]) Size() int {
 //
 // SCORE: 5
 func (d *DynamicArray[T]) Cap() int {
-	// hint: use d.backend.Size() - the backend array size is the capacity
-	panic("todo: please implement me!")
+    // hint: use d.backend.Size() - the backend array size is the capacity
+    panic("todo: please implement me!")
 }
 
 // Tail returns the last element without removing it.
@@ -147,11 +147,11 @@ func (d *DynamicArray[T]) Cap() int {
 //
 // Panics if the array is empty.
 func (d *DynamicArray[T]) Tail() T {
-	if v, ok := d.TryTail(); !ok {
-		panic("DynamicArray.Tail: is empty array")
-	} else {
-		return v
-	}
+    if v, ok := d.TryTail(); !ok {
+        panic("DynamicArray.Tail: is empty array")
+    } else {
+        return v
+    }
 }
 
 // TryTail attempts to return the last element.
@@ -163,8 +163,8 @@ func (d *DynamicArray[T]) Tail() T {
 //
 // SCORE: 10
 func (d *DynamicArray[T]) TryTail() (T, bool) {
-	// hint: check if empty, then return element at index (size - 1)
-	panic("todo: please implement me!")
+    // hint: check if empty, then return element at index (size - 1)
+    panic("todo: please implement me!")
 }
 
 // Head returns the first element without removing it.
@@ -181,11 +181,11 @@ func (d *DynamicArray[T]) TryTail() (T, bool) {
 //
 // Panics if the array is empty.
 func (d *DynamicArray[T]) Head() T {
-	v, ok := d.TryHead()
-	if !ok {
-		panic("DynamicArray.Head: is empty array")
-	}
-	return v
+    v, ok := d.TryHead()
+    if !ok {
+        panic("DynamicArray.Head: is empty array")
+    }
+    return v
 }
 
 // TryHead attempts to return the first element.
@@ -195,11 +195,11 @@ func (d *DynamicArray[T]) Head() T {
 //   - time : O(1)
 //   - space: O(1)
 func (d *DynamicArray[T]) TryHead() (T, bool) {
-	if d.Empty() {
-		var zero T
-		return zero, false
-	}
-	return d.backend.Get(0), true
+    if d.Empty() {
+        var zero T
+        return zero, false
+    }
+    return d.backend.Get(0), true
 }
 
 // Get retrieves the element at the given index.
@@ -217,8 +217,8 @@ func (d *DynamicArray[T]) TryHead() (T, bool) {
 //
 // Panics if index < 0 or index >= Size().
 func (d *DynamicArray[T]) Get(index int) T {
-	d.checkBounds(index)
-	return d.backend.Get(index)
+    d.checkBounds(index)
+    return d.backend.Get(index)
 }
 
 // TryGet attempts to retrieve the element at the given index.
@@ -228,11 +228,11 @@ func (d *DynamicArray[T]) Get(index int) T {
 //   - time : O(1)
 //   - space: O(1)
 func (d *DynamicArray[T]) TryGet(index int) (T, bool) {
-	if index < 0 || index >= d.Size() {
-		var zero T
-		return zero, false
-	}
-	return d.backend.Get(index), true
+    if index < 0 || index >= d.Size() {
+        var zero T
+        return zero, false
+    }
+    return d.backend.Get(index), true
 }
 
 // Set updates the element at the given index.
@@ -249,8 +249,8 @@ func (d *DynamicArray[T]) TryGet(index int) (T, bool) {
 //
 // Panics if index < 0 or index >= Size().
 func (d *DynamicArray[T]) Set(index int, value T) {
-	d.checkBounds(index)
-	d.backend.Set(index, value)
+    d.checkBounds(index)
+    d.backend.Set(index, value)
 }
 
 // TrySet attempts to update the element at the given index.
@@ -260,11 +260,11 @@ func (d *DynamicArray[T]) Set(index int, value T) {
 //   - time : O(1)
 //   - space: O(1)
 func (d *DynamicArray[T]) TrySet(index int, value T) bool {
-	if index < 0 || index >= d.Size() {
-		return false
-	}
-	d.backend.Set(index, value)
-	return true
+    if index < 0 || index >= d.Size() {
+        return false
+    }
+    d.backend.Set(index, value)
+    return true
 }
 
 // Prepend adds an element to the front of the array.
@@ -282,11 +282,11 @@ func (d *DynamicArray[T]) TrySet(index int, value T) bool {
 //
 // SCORE: 15
 func (d *DynamicArray[T]) Prepend(value T) {
-	// hint: 1) grow if size >= capacity
-	//       2) shift all elements right by 1 (from end to start)
-	//       3) set value at index 0
-	//       4) increment size
-	panic("todo: please implement me!")
+    // hint: 1) grow if size >= capacity
+    //       2) shift all elements right by 1 (from end to start)
+    //       3) set value at index 0
+    //       4) increment size
+    panic("todo: please implement me!")
 }
 
 // Shift removes and returns the first element.
@@ -304,11 +304,11 @@ func (d *DynamicArray[T]) Prepend(value T) {
 //
 // Panics if the array is empty.
 func (d *DynamicArray[T]) Shift() T {
-	if v, ok := d.TryShift(); !ok {
-		panic("DynamicArray.Shift: array is empty")
-	} else {
-		return v
-	}
+    if v, ok := d.TryShift(); !ok {
+        panic("DynamicArray.Shift: array is empty")
+    } else {
+        return v
+    }
 }
 
 // TryShift attempts to remove and return the first element.
@@ -320,12 +320,12 @@ func (d *DynamicArray[T]) Shift() T {
 //
 // SCORE: 15
 func (d *DynamicArray[T]) TryShift() (T, bool) {
-	// hint: 1) check if empty, return (zero, false)
-	//       2) save element at index 0
-	//       3) shift all elements left by 1
-	//       4) clear last slot (for GC), decrement size
-	//       5) return (saved, true)
-	panic("todo: please implement me!")
+    // hint: 1) check if empty, return (zero, false)
+    //       2) save element at index 0
+    //       3) shift all elements left by 1
+    //       4) clear last slot (for GC), decrement size
+    //       5) return (saved, true)
+    panic("todo: please implement me!")
 }
 
 // Swap exchanges elements at two indices.
@@ -341,11 +341,11 @@ func (d *DynamicArray[T]) TryShift() (T, bool) {
 //   - time : O(1)
 //   - space: O(1)
 func (d *DynamicArray[T]) Swap(i, j int) {
-	if i != j {
-		x, y := d.Get(i), d.Get(j)
-		d.Set(i, y)
-		d.Set(j, x)
-	}
+    if i != j {
+        x, y := d.Get(i), d.Get(j)
+        d.Set(i, y)
+        d.Set(j, x)
+    }
 }
 
 // Append adds an element to the end of the array.
@@ -370,29 +370,31 @@ func (d *DynamicArray[T]) Swap(i, j int) {
 //
 // SCORE: 25
 func (d *DynamicArray[T]) Append(value T) {
-	// hint: 1) if size >= capacity, call d.grow()
-	//       2) set value at index = size
-	//       3) increment size
-	panic("todo: please implement me!")
+    // hint: 1) if size >= capacity, call d.grow()
+    //       2) set value at index = size
+    //       3) increment size
+    panic("todo: please implement me!")
 }
 
 func (d *DynamicArray[T]) grow() {
-	// Go slice implementation only doubles the capacity if the current size is less than 256.
-	// See: https://cs.opensource.google/go/go/+/refs/tags/go1.24.2:src/runtime/slice.go;l=289-322
-	//
-	// we can do the same with some this simple approximation: oldCap + (oldCap + 3*256) / 4
-	// See: https://victoriametrics.com/blog/go-slice/
-	const threshold = 256
-	capacity := d.Cap()
-	newCapacity := 2 * capacity
-	if capacity >= threshold {
-		newCapacity = capacity + (capacity+3*threshold)/4
-	}
-	newBackend := arrays.NewGarbageCollected[T](newCapacity, true)
-	for i, v := range d.backend.Enum {
-		newBackend.Set(i, v)
-	}
-	d.backend = newBackend
+    // Go slice implementation only doubles the capacity if the current size is less than 256.
+    // See: https://cs.opensource.google/go/go/+/refs/tags/go1.24.2:src/runtime/slice.go;l=289-322
+    //
+    // we can do the same with some this simple approximation: oldCap + (oldCap + 3*256) / 4
+    // See: https://victoriametrics.com/blog/go-slice/
+    //
+    // https://www.josestg.com/posts/math/how-can-be-adding-a-new-item-to-a-dynamic-array-achieved-in-constant-time/
+    const threshold = 256
+    capacity := d.Cap()
+    newCapacity := 2 * capacity
+    if capacity >= threshold {
+        newCapacity = capacity + (capacity+3*threshold)/4
+    }
+    newBackend := arrays.NewGarbageCollected[T](newCapacity, true)
+    for i, v := range d.backend.Enum {
+        newBackend.Set(i, v)
+    }
+    d.backend = newBackend
 }
 
 // Pop removes and returns the last element.
@@ -410,11 +412,11 @@ func (d *DynamicArray[T]) grow() {
 //
 // Panics if the array is empty.
 func (d *DynamicArray[T]) Pop() T {
-	v, ok := d.TryPop()
-	if !ok {
-		panic("DynamicArray.Pop: array is empty")
-	}
-	return v
+    v, ok := d.TryPop()
+    if !ok {
+        panic("DynamicArray.Pop: array is empty")
+    }
+    return v
 }
 
 // TryPop attempts to remove and return the last element.
@@ -424,14 +426,14 @@ func (d *DynamicArray[T]) Pop() T {
 //   - time : O(1)
 //   - space: O(1)
 func (d *DynamicArray[T]) TryPop() (T, bool) {
-	var zero T
-	if d.Size() == 0 {
-		return zero, false
-	}
-	val := d.backend.Get(d.size - 1)
-	d.backend.Set(d.size-1, zero)
-	d.size--
-	return val, true
+    var zero T
+    if d.Size() == 0 {
+        return zero, false
+    }
+    val := d.backend.Get(d.size - 1)
+    d.backend.Set(d.size-1, zero)
+    d.size--
+    return val, true
 }
 
 // Clip reduces capacity to match size.
@@ -448,19 +450,19 @@ func (d *DynamicArray[T]) TryPop() (T, bool) {
 //
 // Panics if the array is empty.
 func (d *DynamicArray[T]) Clip() {
-	if d.Empty() {
-		panic("DynamicArray.Clip: array is empty")
-	}
+    if d.Empty() {
+        panic("DynamicArray.Clip: array is empty")
+    }
 
-	if d.size == d.Cap() {
-		return
-	}
+    if d.size == d.Cap() {
+        return
+    }
 
-	newBackend := arrays.NewGarbageCollected[T](d.size, true)
-	for i := range d.Size() {
-		newBackend.Set(i, d.backend.Get(i))
-	}
-	d.backend = newBackend
+    newBackend := arrays.NewGarbageCollected[T](d.size, true)
+    for i := range d.Size() {
+        newBackend.Set(i, d.backend.Get(i))
+    }
+    d.backend = newBackend
 }
 
 // Iter iterates over elements from front to back.
@@ -475,11 +477,11 @@ func (d *DynamicArray[T]) Clip() {
 //   - time : O(n)
 //   - space: O(1)
 func (d *DynamicArray[T]) Iter(yield func(T) bool) {
-	for i := range d.Size() {
-		if !yield(d.Get(i)) {
-			break
-		}
-	}
+    for i := range d.Size() {
+        if !yield(d.Get(i)) {
+            break
+        }
+    }
 }
 
 // IterBackward iterates over elements from back to front.
@@ -496,8 +498,8 @@ func (d *DynamicArray[T]) Iter(yield func(T) bool) {
 //
 // SCORE: 5
 func (d *DynamicArray[T]) IterBackward(yield func(T) bool) {
-	// hint: loop from (size-1) down to 0, call yield(Get(i))
-	panic("todo: please implement me!")
+    // hint: loop from (size-1) down to 0, call yield(Get(i))
+    panic("todo: please implement me!")
 }
 
 // Enum iterates over elements with their indices from front to back.
@@ -519,11 +521,11 @@ func (d *DynamicArray[T]) IterBackward(yield func(T) bool) {
 //   - time : O(n)
 //   - space: O(1)
 func (d *DynamicArray[T]) Enum(yield func(int, T) bool) {
-	for i := range d.Size() {
-		if !yield(i, d.Get(i)) {
-			break
-		}
-	}
+    for i := range d.Size() {
+        if !yield(i, d.Get(i)) {
+            break
+        }
+    }
 }
 
 // EnumBackward iterates over elements with their indices from back to front.
@@ -547,8 +549,8 @@ func (d *DynamicArray[T]) Enum(yield func(int, T) bool) {
 //
 // SCORE: 5
 func (d *DynamicArray[T]) EnumBackward(yield func(int, T) bool) {
-	// hint: loop from (size-1) down to 0, call yield(i, Get(i))
-	panic("todo: please implement me!")
+    // hint: loop from (size-1) down to 0, call yield(i, Get(i))
+    panic("todo: please implement me!")
 }
 
 // String returns the string representation.
@@ -563,7 +565,7 @@ func (d *DynamicArray[T]) EnumBackward(yield func(int, T) bool) {
 //   - time : O(n)
 //   - space: O(n)
 func (d *DynamicArray[T]) String() string {
-	return sequence.String(d.Iter)
+    return sequence.String(d.Iter)
 }
 
 // Insert adds an element at the given index.
@@ -582,20 +584,20 @@ func (d *DynamicArray[T]) String() string {
 //
 // Panics if index < 0 or index > Size().
 func (d *DynamicArray[T]) Insert(index int, value T) {
-	if index < 0 || index > d.size {
-		panic("DynamicArray.Insert: index out of range")
-	}
+    if index < 0 || index > d.size {
+        panic("DynamicArray.Insert: index out of range")
+    }
 
-	if d.size >= d.Cap() {
-		d.grow()
-	}
+    if d.size >= d.Cap() {
+        d.grow()
+    }
 
-	for i := d.size; i > index; i-- {
-		d.backend.Set(i, d.backend.Get(i-1))
-	}
+    for i := d.size; i > index; i-- {
+        d.backend.Set(i, d.backend.Get(i-1))
+    }
 
-	d.backend.Set(index, value)
-	d.size++
+    d.backend.Set(index, value)
+    d.size++
 }
 
 // Remove deletes and returns the element at the given index.
@@ -616,11 +618,11 @@ func (d *DynamicArray[T]) Insert(index int, value T) {
 //
 // Panics if index < 0 or index >= Size().
 func (d *DynamicArray[T]) Remove(index int) T {
-	if v, ok := d.TryRemove(index); !ok {
-		panic("dynamicarray: index out of range")
-	} else {
-		return v
-	}
+    if v, ok := d.TryRemove(index); !ok {
+        panic("dynamicarray: index out of range")
+    } else {
+        return v
+    }
 }
 
 // TryRemove attempts to remove the element at the given index.
@@ -632,16 +634,16 @@ func (d *DynamicArray[T]) Remove(index int) T {
 //
 // SCORE: 15
 func (d *DynamicArray[T]) TryRemove(index int) (T, bool) {
-	// hint: 1) check bounds, return (zero, false) if invalid
-	//       2) save element at index
-	//       3) shift elements left from index+1 to size-1
-	//       4) clear last slot, decrement size
-	//       5) return (saved, true)
-	panic("todo: please implement me!")
+    // hint: 1) check bounds, return (zero, false) if invalid
+    //       2) save element at index
+    //       3) shift elements left from index+1 to size-1
+    //       4) clear last slot, decrement size
+    //       5) return (saved, true)
+    panic("todo: please implement me!")
 }
 
 func (d *DynamicArray[T]) checkBounds(index int) {
-	if index < 0 || index >= d.Size() {
-		panic("dynamicarray: index out of range")
-	}
+    if index < 0 || index >= d.Size() {
+        panic("dynamicarray: index out of range")
+    }
 }
