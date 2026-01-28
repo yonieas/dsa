@@ -27,6 +27,7 @@ func TestDynamicArray(t *testing.T) {
 		prop.TryRemove(f),
 		prop.Iter(f),
 		prop.IterBackward(f),
+		prop.EnumBackward(f),
 		prop.Insert(f),
 		prop.Remove(f),
 		prop.Swap(f),
