@@ -44,6 +44,7 @@ package queue
 
 import (
 	"github.com/josestg/dsa/adt"
+	"github.com/josestg/dsa/internal/generics"
 	"github.com/josestg/dsa/linkedlist"
 )
 
@@ -117,7 +118,8 @@ func NewWith[E any](b Backend[E]) *Queue[E] {
 func (q *Queue[E]) Empty() bool {
 	// hint: 1) call ensureBackend()
 	//       2) return q.b.Empty()
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	return q.b.Empty()
 }
 
 // Size returns the number of elements in the queue.
@@ -138,7 +140,8 @@ func (q *Queue[E]) Empty() bool {
 func (q *Queue[E]) Size() int {
 	// hint: 1) call ensureBackend()
 	//       2) return q.b.Size()
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	return q.b.Size()
 }
 
 // Peek returns the front element without removing it.
@@ -179,7 +182,11 @@ func (q *Queue[E]) TryPeek() (E, bool) {
 	// hint: 1) call ensureBackend()
 	//       2) if Empty(), return (zero, false)
 	//       3) return (q.b.Head(), true) - front of queue is head
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	if q.Empty() {
+		return generics.ZeroValue[E](), false
+	}
+	return q.b.Head(), true
 }
 
 // Enqueue adds an element to the rear of the queue.
@@ -210,7 +217,8 @@ func (q *Queue[E]) TryPeek() (E, bool) {
 func (q *Queue[E]) Enqueue(data E) {
 	// hint: 1) call ensureBackend()
 	//       2) call q.b.Append(data) - enqueue at rear = append to tail
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	q.b.Append(data)
 }
 
 // Dequeue removes and returns the front element.
@@ -260,7 +268,11 @@ func (q *Queue[E]) TryDequeue() (E, bool) {
 	// hint: 1) call ensureBackend()
 	//       2) if Empty(), return (zero, false)
 	//       3) return (q.b.Shift(), true) - dequeue from front = shift from head
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	if q.Empty() {
+		return generics.ZeroValue[E](), false
+	}
+	return q.b.Shift(), true
 }
 
 // String returns the string representation of the queue.
@@ -283,7 +295,8 @@ func (q *Queue[E]) TryDequeue() (E, bool) {
 func (q *Queue[E]) String() string {
 	// hint: 1) call ensureBackend()
 	//       2) return q.b.String()
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	return q.b.String()
 }
 
 // Iter iterates over all elements from front to rear.
@@ -308,11 +321,14 @@ func (q *Queue[E]) String() string {
 func (q *Queue[E]) Iter(yield func(E) bool) {
 	// hint: 1) call ensureBackend()
 	//       2) call q.b.Iter(yield)
-	panic("todo: please implement me!")
+	q.ensureBackend()
+	q.b.Iter(yield)
 }
 
 // SCORE: 20
 func (q *Queue[E]) ensureBackend() {
 	// hint: if q.b == nil, initialize it with linkedlist.NewDoublyLinkedList[E]()
-	panic("todo: please implement me!")
+	if q.b == nil {
+		q.b = linkedlist.NewDoublyLinkedList[E]()
+	}
 }
