@@ -51,7 +51,10 @@ package hashmap
 
 import (
 	"cmp"
+	"fmt"
+	"strings"
 
+	"github.com/josestg/dsa/internal/generics"
 	"github.com/josestg/dsa/linkedlist"
 )
 
@@ -157,7 +160,10 @@ func NewWith[K comparable, V any](opts Options[K]) *HashMap[K, V] {
 func (h *HashMap[K, V]) Put(key K, value V) {
 	// hint: 1) if LoadFactor() >= threshold, call growAndRehash()
 	//       2) call h.put(key, value)
-	panic("todo: please implement me!")
+	if h.LoadFactor() >= h.loadThreshold {
+		h.growAndRehash()
+	}
+	h.put(key, value)
 }
 
 // Del removes a key-value pair from the map.
@@ -187,7 +193,18 @@ func (h *HashMap[K, V]) Del(key K) {
 	// hint: 1) get bucket index using bucketIndex(key)
 	//       2) iterate bucket (entries) with sequence.Enum to track index
 	//       3) if entry.key == key: entries.Remove(i), decrement size, break
-	panic("todo: please implement me!")
+	bucketIdx := h.bucketIndex(key)
+	entry := h.buckets[bucketIdx]
+	idx := 0
+	entry.Iter(func(e *Entry[K, V]) bool {
+		if e.Key() == key {
+			entry.Remove(idx)
+			h.size--
+			return false
+		}
+		idx++
+		return true
+	})
 }
 
 // SCORE: 10
@@ -195,7 +212,22 @@ func (h *HashMap[K, V]) put(key K, value V) {
 	// hint: 1) get bucket index using bucketIndex(key)
 	//       2) iterate bucket to check if key exists, update value if found
 	//       3) if not found: entries.Append(NewEntry(key, value)), increment size
-	panic("todo: please implement me!")
+	bucketIdx := h.bucketIndex(key)
+	entry := h.buckets[bucketIdx]
+	found := false
+	entry.Iter(func(e *Entry[K, V]) bool {
+		if e.Key() == key {
+			e.val = value
+			found = true
+			return false // Stop searching immediately
+		}
+		return true
+	})
+	// Append if the key of entry not found in the bucket
+	if !found {
+		entry.Append(NewEntry(key, value))
+		h.size++
+	}
 }
 
 // Iter iterates over all entries in the map.
@@ -217,7 +249,13 @@ func (h *HashMap[K, V]) put(key K, value V) {
 // SCORE: 10
 func (h *HashMap[K, V]) Iter(yield func(*Entry[K, V]) bool) {
 	// hint: for each bucket in h.buckets, iterate entries and yield each
-	panic("todo: please implement me!")
+	for _, bucket := range h.buckets {
+		for v := range bucket.Iter {
+			if !yield(v) {
+				return
+			}
+		}
+	}
 }
 
 // Keys iterates over all keys in the map.
@@ -233,7 +271,12 @@ func (h *HashMap[K, V]) Iter(yield func(*Entry[K, V]) bool) {
 // SCORE: 5
 func (h *HashMap[K, V]) Keys(yield func(K) bool) {
 	// hint: use h.Iter and yield e.Key() for each entry
-	panic("todo: please implement me!")
+	h.Iter(func(e *Entry[K, V]) bool {
+		if !yield(e.Key()) {
+			return false
+		}
+		return true
+	})
 }
 
 // Get retrieves the value for a key.
@@ -260,7 +303,29 @@ func (h *HashMap[K, V]) Get(key K) (V, bool) {
 	//       2) get bucket index, iterate bucket entries
 	//       3) if entry.key == key, return (entry.val, true)
 	//       4) return (zero, false)
-	panic("todo: please implement me!")
+	if h.Empty() {
+		return generics.ZeroValue[V](), false
+	}
+	bucketIdx := h.bucketIndex(key)
+	entry := h.buckets[bucketIdx]
+	if entry == nil {
+		return generics.ZeroValue[V](), false
+	}
+	found := false
+	value := generics.ZeroValue[V]()
+	entry.Iter(func(e *Entry[K, V]) bool {
+		if e.Key() == key {
+			value = e.Value()
+			found = true
+			return false // Stop searching
+		}
+		return true // Continue to next entry
+	})
+
+	if found {
+		return value, true
+	}
+	return generics.ZeroValue[V](), false
 }
 
 // Exists checks if a key is present in the map.
@@ -290,7 +355,20 @@ func (h *HashMap[K, V]) Exists(key K) bool {
 func (h *HashMap[K, V]) String() string {
 	// hint: use strings.Builder, iterate with sequence.Enum(h.Iter)
 	//       format each entry as "key:value"
-	panic("todo: please implement me!")
+	var sb strings.Builder
+	sb.WriteByte('[')
+	first := true
+	h.Iter(func(e *Entry[K, V]) bool {
+		// Give a space in every entry except the first
+		if !first {
+			sb.WriteByte(' ')
+		}
+		sb.WriteString(fmt.Sprintf("%v:%v", e.Key(), e.Value()))
+		first = false
+		return true
+	})
+	sb.WriteByte(']')
+	return sb.String()
 }
 
 // SCORE: 10
@@ -298,7 +376,11 @@ func (h *HashMap[K, V]) bucketIndex(key K) int {
 	// hint: 1) hash := h.hashFunction(key)
 	//       2) if hash < 0, hash = -hash (make positive)
 	//       3) return hash % len(h.buckets)
-	panic("todo: please implement me!")
+	hash := h.hashFunction(key)
+	if hash < 0 {
+		hash = hash * -1
+	}
+	return hash % len(h.buckets)
 }
 
 // growAndRehash doubles the capacity and redistributes all entries.
@@ -333,7 +415,17 @@ func (h *HashMap[K, V]) growAndRehash() {
 	// hint: 1) create new HashMap with 2x capacity using NewWith
 	//       2) iterate all entries with h.Iter, call h2.put(key, val)
 	//       3) replace h.size and h.buckets with h2's values
-	panic("todo: please implement me!")
+	nh := NewWith[K, V](Options[K]{
+		Capacity:      h.Cap() * 2,
+		LoadThreshold: h.loadThreshold,
+		HashFunction:  h.hashFunction,
+	})
+	h.Iter(func(e *Entry[K, V]) bool {
+		nh.put(e.Key(), e.Value())
+		return true
+	})
+	h.size = nh.size
+	h.buckets = nh.buckets
 }
 
 // Size returns the number of key-value pairs.
