@@ -41,7 +41,11 @@
 package sets
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/josestg/dsa/hashmap"
+	"github.com/josestg/dsa/sequence"
 )
 
 // none is an empty struct used as placeholder value.
@@ -108,7 +112,7 @@ func NewWith[E comparable](opts Options[E]) *HashSet[E] {
 func (s *HashSet[E]) Add(data E) {
 	// hint: call s.backend.Put(data, none{})
 	//       - the key is the element, value is empty struct
-	panic("todo: please implement me!")
+	s.backend.Put(data, none{})
 }
 
 // Del removes an element from the set.
@@ -132,7 +136,7 @@ func (s *HashSet[E]) Add(data E) {
 // SCORE: 10
 func (s *HashSet[E]) Del(data E) {
 	// hint: call s.backend.Del(data)
-	panic("todo: please implement me!")
+	s.backend.Del(data)
 }
 
 // Exists checks if an element is in the set.
@@ -149,7 +153,7 @@ func (s *HashSet[E]) Del(data E) {
 // SCORE: 10
 func (s *HashSet[E]) Exists(data E) bool {
 	// hint: return s.backend.Exists(data)
-	panic("todo: please implement me!")
+	return s.backend.Exists(data)
 }
 
 // Size returns the number of elements in the set.
@@ -193,7 +197,16 @@ func (s *HashSet[E]) Empty() bool {
 func (s *HashSet[E]) String() string {
 	// hint: use strings.Builder, iterate with sequence.Enum(s.Iter)
 	//       format as "{elem1 elem2 ...}"
-	panic("todo: please implement me!")
+	var sb strings.Builder
+	sb.WriteByte('{')
+	for i, e := range sequence.Enum(s.Iter) {
+		if i > 0 {
+			sb.WriteByte(' ')
+		}
+		sb.WriteString(fmt.Sprintf("%v", e))
+	}
+	sb.WriteByte('}')
+	return sb.String()
 }
 
 // Iter iterates over all elements in the set.
@@ -213,7 +226,11 @@ func (s *HashSet[E]) String() string {
 // SCORE: 10
 func (s *HashSet[E]) Iter(yield func(E) bool) {
 	// hint: iterate s.backend.Iter, yield e.Key() for each entry
-	panic("todo: please implement me!")
+	for e := range s.backend.Iter {
+		if !yield(e.Key()) {
+			return
+		}
+	}
 }
 
 // Union returns a new set with elements from both sets.
@@ -243,7 +260,14 @@ func (s *HashSet[E]) Union(s2 *HashSet[E]) *HashSet[E] {
 	//       2) iterate s, add each element to union
 	//       3) iterate s2, add each element to union
 	//       4) return union
-	panic("todo: please implement me!")
+	union := New[E]()
+	for e := range s.backend.Keys {
+		union.Add(e)
+	}
+	for e := range s2.backend.Keys {
+		union.Add(e)
+	}
+	return union
 }
 
 // Intersection returns a new set with elements in both sets.
@@ -273,7 +297,21 @@ func (s *HashSet[E]) Intersection(s2 *HashSet[E]) *HashSet[E] {
 	//       2) choose smaller set to iterate (efficiency)
 	//       3) for each element in smaller set, if other.Exists(v), add to result
 	//       4) return intersection
-	panic("todo: please implement me!")
+	intersection := New[E]()
+	if s.Size() < s2.Size() {
+		for e := range s.backend.Keys {
+			if s2.Exists(e) {
+				intersection.Add(e)
+			}
+		}
+	} else {
+		for e := range s2.backend.Keys {
+			if s.Exists(e) {
+				intersection.Add(e)
+			}
+		}
+	}
+	return intersection
 }
 
 // Disjoint returns true if the two sets have no common elements.
@@ -295,5 +333,18 @@ func (s *HashSet[E]) Disjoint(s2 *HashSet[E]) bool {
 	// hint: 1) choose smaller set to iterate (efficiency)
 	//       2) for each element in smaller set, if other.Exists(v), return false
 	//       3) return true (no common elements found)
-	panic("todo: please implement me!")
+	if s.Size() < s2.Size() {
+		for v := range s.backend.Keys {
+			if s2.backend.Exists(v) {
+				return false
+			}
+		}
+	} else {
+		for v := range s2.backend.Keys {
+			if s.backend.Exists(v) {
+				return false
+			}
+		}
+	}
+	return true
 }
