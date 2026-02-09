@@ -52,10 +52,13 @@
 package graph
 
 import (
+	"fmt"
 	"iter"
+	"strings"
 
 	"github.com/josestg/dsa/hashmap"
 	"github.com/josestg/dsa/linkedlist"
+	"github.com/josestg/dsa/sequence"
 )
 
 // Graph represents a graph using an adjacency list.
@@ -114,7 +117,12 @@ func (g *Graph[V]) ensureNode(v V) *linkedlist.SinglyLinkedList[V] {
 	// hint: 1) get neighbors list from g.adjacency.Get(v)
 	//       2) if not found, create new list and g.adjacency.Put(v, list)
 	//       3) return the neighbors list
-	panic("todo: please implement me!")
+	if list, found := g.adjacency.Get(v); found {
+		return list
+	}
+	newList := linkedlist.NewSinglyLinkedList[V]()
+	g.adjacency.Put(v, newList)
+	return newList
 }
 
 // Size returns the number of vertices.
@@ -176,7 +184,22 @@ func (g *Graph[V]) AddEdge(from, to V) {
 	//       2) check if edge exists (iterate list, if v == to, return)
 	//       3) list.Append(to)
 	//       4) if undirected (!g.directed), also add reverse edge
-	panic("todo: please implement me!")
+	list := g.ensureNode(from)
+	for l := range list.Iter {
+		if l == to {
+			return
+		}
+	}
+	list.Append(to)
+	if !g.directed {
+		list := g.ensureNode(to)
+		for l := range list.Iter {
+			if l == from {
+				return
+			}
+		}
+		list.Append(from)
+	}
 }
 
 // DelEdge removes an edge between two vertices.
@@ -203,7 +226,22 @@ func (g *Graph[V]) DelEdge(from, to V) {
 	// hint: 1) get list from g.adjacency.Get(from)
 	//       2) iterate with sequence.Enum, find 'to', call list.Remove(i)
 	//       3) if undirected, repeat for reverse direction
-	panic("todo: please implement me!")
+	if list, found := g.adjacency.Get(from); found {
+		for i, v := range sequence.Enum(list.Iter) {
+			if v == to {
+				list.Remove(i)
+			}
+		}
+		if !g.Directed() {
+			if list, found = g.adjacency.Get(to); found {
+				for i, v := range sequence.Enum(list.Iter) {
+					if v == from {
+						list.Remove(i)
+					}
+				}
+			}
+		}
+	}
 }
 
 // HasEdge checks if an edge exists from one vertex to another.
@@ -223,7 +261,14 @@ func (g *Graph[V]) HasEdge(from, to V) bool {
 	// hint: 1) get list from g.adjacency.Get(from)
 	//       2) iterate list, if v == to, return true
 	//       3) return false
-	panic("todo: please implement me!")
+	if list, found := g.adjacency.Get(from); found {
+		for l := range list.Iter {
+			if l == to {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // HasVertex checks if a vertex exists in the graph.
@@ -240,7 +285,7 @@ func (g *Graph[V]) HasEdge(from, to V) bool {
 // SCORE: 5
 func (g *Graph[V]) HasVertex(v V) bool {
 	// hint: return g.adjacency.Exists(v)
-	panic("todo: please implement me!")
+	return g.adjacency.Exists(v)
 }
 
 // Vertex iterates over all vertices in the graph.
@@ -261,7 +306,11 @@ func (g *Graph[V]) HasVertex(v V) bool {
 // SCORE: 10
 func (g *Graph[V]) Vertex(yield func(V) bool) {
 	// hint: iterate g.adjacency.Iter, yield entry.Key()
-	panic("todo: please implement me!")
+	for v := range g.adjacency.Iter {
+		if !yield(v.Key()) {
+			return
+		}
+	}
 }
 
 // Neighbors returns an iterator over a vertex's neighbors.
@@ -285,7 +334,15 @@ func (g *Graph[V]) Vertex(yield func(V) bool) {
 func (g *Graph[V]) Neighbors(v V) iter.Seq[V] {
 	// hint: return a function that gets list from adjacency
 	//       and iterates list.Iter, yielding each neighbor
-	panic("todo: please implement me!")
+	return func(yield func(V) bool) {
+		if list, found := g.adjacency.Get(v); found {
+			for v := range list.Iter {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
 }
 
 // String returns a string representation of the graph.
@@ -305,5 +362,12 @@ func (g *Graph[V]) Neighbors(v V) iter.Seq[V] {
 func (g *Graph[V]) String() string {
 	// hint: iterate g.adjacency.Iter, format as "Graph{V: [neighbors], ...}"
 	//       use sequence.String(entry.Value().Iter) for neighbors
-	panic("todo: please implement me!")
+	var sb strings.Builder
+	sb.WriteString("Graph{")
+	for v := range g.adjacency.Iter {
+		n := sequence.String(v.Value().Iter)
+		sb.WriteString(fmt.Sprintf("%v: [%s]", v, n))
+	}
+	sb.WriteByte('}')
+	return sb.String()
 }

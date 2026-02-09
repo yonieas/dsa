@@ -52,6 +52,7 @@ package tree
 import (
 	"cmp"
 
+	"github.com/josestg/dsa/internal/generics"
 	"github.com/josestg/dsa/sequence"
 )
 
@@ -170,7 +171,30 @@ func (t *BinarySearchTree[E]) Add(value E) {
 	//       3) if value > node.data, recurse right
 	//       4) if equal, do nothing (duplicate)
 	//       5) increment size if inserted
-	panic("todo: please implement me!")
+	var inserted bool
+	root, inserted := t.addHelper(t.root, value)
+	if inserted {
+		t.size++
+	}
+	t.root = root
+}
+
+// Recursive helper for `Add` method
+func (t *BinarySearchTree[E]) addHelper(node *Node[E], value E) (*Node[E], bool) {
+	if node == nil {
+		return &Node[E]{data: value}, true
+	}
+	if value < node.data {
+		newLeft, inserted := t.addHelper(node.left, value)
+		node.left = newLeft
+		return node, inserted
+	} else if value > node.data {
+		newRight, inserted := t.addHelper(node.right, value)
+		node.right = newRight
+		return node, inserted
+	} else {
+		return node, false
+	}
 }
 
 // Exists checks if a value exists in the BST.
@@ -203,7 +227,21 @@ func (t *BinarySearchTree[E]) Exists(value E) bool {
 	//       2) if value < node.data, search left
 	//       3) if value > node.data, search right
 	//       4) if equal, return true
-	panic("todo: please implement me!")
+	return t.existsHelper(t.root, value)
+}
+
+// Recursive helper for `Exist` method
+func (t *BinarySearchTree[E]) existsHelper(node *Node[E], value E) bool {
+	if node == nil {
+		return false
+	}
+	if value < node.data {
+		return t.existsHelper(node.left, value)
+	} else if value > node.data {
+		return t.existsHelper(node.right, value)
+	} else {
+		return true
+	}
 }
 
 // Del removes a value from the BST, maintaining the ordering property.
@@ -261,7 +299,41 @@ func (t *BinarySearchTree[E]) Del(value E) {
 	//          - both children: find min in right subtree (successor),
 	//            copy value, delete successor from right subtree
 	//       5) decrement size if deleted
-	panic("todo: please implement me!")
+	var deleted bool
+	t.root, deleted = t.deleteHelper(t.root, value)
+	if deleted {
+		t.size--
+	}
+}
+
+// Recursive helper for `Del` method
+func (t *BinarySearchTree[E]) deleteHelper(node *Node[E], value E) (*Node[E], bool) {
+	if node == nil {
+		return nil, false
+	}
+	if value < node.data {
+		newLeft, deleted := t.deleteHelper(node.left, value)
+		node.left = newLeft
+		return node, deleted
+	} else if value > node.data {
+		newRight, deleted := t.deleteHelper(node.right, value)
+		node.right = newRight
+		return node, deleted
+	} else {
+		// No left child
+		if node.left == nil {
+			return node.right, true
+		}
+		// No right child
+		if node.right == nil {
+			return node.left, true
+		}
+		// Have two children
+		successor, _ := t.Min()
+		node.data = successor
+		node.right, _ = t.deleteHelper(node.right, successor)
+		return node, true
+	}
 }
 
 // Min returns the smallest value in the tree.
@@ -285,7 +357,14 @@ func (t *BinarySearchTree[E]) Min() (E, bool) {
 	// hint: 1) if root == nil, return (zero, false)
 	//       2) traverse left until node.left == nil
 	//       3) return (node.data, true)
-	panic("todo: please implement me!")
+	if t.root == nil {
+		return generics.ZeroValue[E](), false
+	}
+	node := t.root
+	for node.left != nil {
+		node = node.left
+	}
+	return node.data, true
 }
 
 // Max returns the largest value in the tree.
@@ -309,7 +388,14 @@ func (t *BinarySearchTree[E]) Max() (E, bool) {
 	// hint: 1) if root == nil, return (zero, false)
 	//       2) traverse right until node.right == nil
 	//       3) return (node.data, true)
-	panic("todo: please implement me!")
+	if t.root == nil {
+		return generics.ZeroValue[E](), false
+	}
+	node := t.root
+	for node.right != nil {
+		node = node.right
+	}
+	return node.data, true
 }
 
 // InOrder traverses the tree in sorted order (left → root → right).
@@ -344,7 +430,24 @@ func (t *BinarySearchTree[E]) InOrder(visit func(E) bool) {
 	//       2) if !inOrder(node.left, visit), return false
 	//       3) if !visit(node.data), return false
 	//       4) return inOrder(node.right, visit)
-	panic("todo: please implement me!")
+	t.inOrderHelper(t.root, visit)
+}
+
+// Recursive helper for `InOrder` method
+func (t *BinarySearchTree[E]) inOrderHelper(node *Node[E], visit func(E) bool) bool {
+	if node == nil {
+		return true
+	}
+	// Left traversal
+	if !t.inOrderHelper(node.left, visit) {
+		return false
+	}
+	// Visit root
+	if !visit(node.data) {
+		return false
+	}
+	// Right traversal
+	return t.inOrderHelper(node.right, visit)
 }
 
 // Iter is an alias for InOrder, satisfying adt.Iterator.
@@ -391,7 +494,24 @@ func (t *BinarySearchTree[E]) IterBackward(visit func(E) bool) {
 	//       1) recurse right first
 	//       2) visit node
 	//       3) recurse left
-	panic("todo: please implement me!")
+	t.reverseInOrderHelper(t.root, visit)
+}
+
+// Recursive helper for `IterBackward` method
+func (t *BinarySearchTree[E]) reverseInOrderHelper(node *Node[E], visit func(E) bool) bool {
+	if node == nil {
+		return true
+	}
+	// Right traversal
+	if !t.reverseInOrderHelper(node.right, visit) {
+		return false
+	}
+	// Visit root
+	if !visit(node.data) {
+		return false
+	}
+	// Left traversal
+	return t.reverseInOrderHelper(node.left, visit)
 }
 
 // PreOrder traverses the tree in pre-order (root → left → right).
@@ -424,7 +544,24 @@ func (t *BinarySearchTree[E]) PreOrder(visit func(E) bool) {
 	//       1) visit node first
 	//       2) recurse left
 	//       3) recurse right
-	panic("todo: please implement me!")
+	t.preOrderHelper(t.root, visit)
+}
+
+// Recursive helper for `PreOrder` method
+func (t *BinarySearchTree[E]) preOrderHelper(node *Node[E], visit func(E) bool) bool {
+	if node == nil {
+		return true
+	}
+	// Visit root
+	if !visit(node.data) {
+		return false
+	}
+	// Left traversal
+	if !t.preOrderHelper(node.left, visit) {
+		return false
+	}
+	// Right traversal
+	return t.preOrderHelper(node.right, visit)
 }
 
 // PostOrder traverses the tree in post-order (left → right → root).
@@ -457,5 +594,25 @@ func (t *BinarySearchTree[E]) PostOrder(visit func(E) bool) {
 	//       1) recurse left
 	//       2) recurse right
 	//       3) visit node last
-	panic("todo: please implement me!")
+	t.postOrderHelper(t.root, visit)
+}
+
+// Recursive function for `PostOrder` method
+func (t *BinarySearchTree[E]) postOrderHelper(node *Node[E], visit func(E) bool) bool {
+	if node == nil {
+		return true
+	}
+	// Left traversal
+	if !t.postOrderHelper(node.left, visit) {
+		return false
+	}
+	// Right traversal
+	if !t.postOrderHelper(node.right, visit) {
+		return false
+	}
+	// Visit root
+	if !visit(node.data) {
+		return false
+	}
+	return true
 }

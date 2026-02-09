@@ -44,6 +44,7 @@ package stack
 
 import (
 	"github.com/josestg/dsa/adt"
+	"github.com/josestg/dsa/internal/generics"
 	"github.com/josestg/dsa/linkedlist"
 )
 
@@ -121,7 +122,8 @@ func NewWith[E any](b Backend[E]) *Stack[E] {
 func (s *Stack[E]) Empty() bool {
 	// hint: 1) call ensureBackend()
 	//       2) return s.b.Empty()
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	return s.b.Empty()
 }
 
 // Size returns the number of elements in the stack.
@@ -144,7 +146,8 @@ func (s *Stack[E]) Empty() bool {
 func (s *Stack[E]) Size() int {
 	// hint: 1) call ensureBackend()
 	//       2) return s.b.Size()
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	return s.b.Size()
 }
 
 // Peek returns the top element without removing it.
@@ -185,7 +188,11 @@ func (s *Stack[E]) TryPeek() (E, bool) {
 	// hint: 1) call ensureBackend()
 	//       2) if Empty(), return (zero, false)
 	//       3) return (s.b.Tail(), true) - top of stack is the tail
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	if s.Empty() {
+		return generics.ZeroValue[E](), false
+	}
+	return s.b.Tail(), true
 }
 
 // Push adds an element to the top of the stack.
@@ -210,7 +217,8 @@ func (s *Stack[E]) TryPeek() (E, bool) {
 func (s *Stack[E]) Push(data E) {
 	// hint: 1) call ensureBackend()
 	//       2) call s.b.Append(data) - push to top = append to tail
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	s.b.Append(data)
 }
 
 // Pop removes and returns the top element.
@@ -252,7 +260,11 @@ func (s *Stack[E]) TryPop() (E, bool) {
 	// hint: 1) call ensureBackend()
 	//       2) if Empty(), return (zero, false)
 	//       3) return (s.b.Pop(), true) - pop from top = pop from tail
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	if s.Empty() {
+		return generics.ZeroValue[E](), false
+	}
+	return s.b.Pop(), true
 }
 
 // String returns the string representation of the stack.
@@ -277,7 +289,8 @@ func (s *Stack[E]) TryPop() (E, bool) {
 func (s *Stack[E]) String() string {
 	// hint: 1) call ensureBackend()
 	//       2) return s.b.String()
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	return s.b.String()
 }
 
 // Iter iterates over all elements from bottom to top.
@@ -302,11 +315,14 @@ func (s *Stack[E]) String() string {
 func (s *Stack[E]) Iter(yield func(E) bool) {
 	// hint: 1) call ensureBackend()
 	//       2) call s.b.Iter(yield)
-	panic("todo: please implement me!")
+	s.ensureBackend()
+	s.b.Iter(yield)
 }
 
 // SCORE: 20
 func (s *Stack[E]) ensureBackend() {
 	// hint: if s.b == nil, initialize it with linkedlist.NewDoublyLinkedList[E]()
-	panic("todo: please implement me!")
+	if s.b == nil {
+		linkedlist.NewDoublyLinkedList[E]()
+	}
 }
